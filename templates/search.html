@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Search Items</h1>
+<form method="get" class="filters">
+  <input name="q" placeholder="Name, place, item ID..." value="{{ q }}">
+  <select name="type">
+    <option value="">All</option>
+    <option value="found" {{ 'selected' if kind=='found' }}>Found</option>
+    <option value="lost" {{ 'selected' if kind=='lost' }}>Lost</option>
+  </select>
+  <select name="category">
+    <option value="">Any category</option>
+    {% for c in categories %}<option {{ 'selected' if c==cat }}>{{ c }}</option>{% endfor %}
+  </select>
+  <button>Search</button>
+</form>
+{% for i in results %}
+  <a class="row" href="{{ url_for('item_page', item_id=i.item_id) }}">
+    <span><b>{{ i.name }}</b> <small>{{ i.item_id }} · {{ i.category }} · {{ i.location }}</small></span>
+    <span class="badge">{{ i.type|capitalize }} · {{ i.status }}</span>
+  </a>
+{% else %}<p>No matching items.</p>{% endfor %}
+{% endblock %}

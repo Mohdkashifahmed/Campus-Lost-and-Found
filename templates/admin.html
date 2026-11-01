@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Admin Panel</h1>
+
+<h2>Simulated RFID scan</h2>
+<form method="post" action="{{ url_for('scan') }}" class="filters">
+  <input name="item_id" placeholder="ITM-XXXXXXXX" required>
+  <button name="action" value="checkin">Check-in</button>
+  <button name="action" value="checkout">Check-out</button>
+</form>
+
+<h2>Pending claims ({{ pending|length }})</h2>
+
+{% for c in pending %}
+<div class="card-wide">
+  <p><b>{{ c.item.name }}</b> ({{ c.item_id }}), found at {{ c.item.location }}</p>
+  <p><b>Claimant:</b> {{ c.claimant_name }} · {{ c.roll_no }} · {{ c.email }}</p>
+  <p><b>Proof:</b> {{ c.proof }}</p>
+  <p><b>Item description on record:</b> {{ c.item.description }}</p>
+
+  <form method="post" action="{{ url_for('decide', claim_id=c.claim_id, action='approve') }}" style="display:inline">
+    <button class="ok">Verify &amp; mark Returned</button>
+  </form>
+
+  <form method="post" action="{{ url_for('decide', claim_id=c.claim_id, action='reject') }}" style="display:inline">
+    <button class="no">Reject</button>
+  </form>
+</div>
+{% else %}
+<p>No pending claims.</p>
+{% endfor %}
+
+<!-- ACTIVITY LOGS SECTION -->
+<h2>Recent Activity Logs ({{ activity|length }})</h2>
+
+{% for a in activity %}
+<div class="row">
+  <span>
+    <b>{{ a.event }}</b>
+    <small>Item ID: {{ a.item_id }}</small>
+  </span>
+  <span class="badge">{{ a.time }}</span>
+</div>
+{% else %}
+<p>No activity recorded yet.</p>
+{% endfor %}
+
+<h2>All items</h2>
+
+{% for i in all_items %}
+<a class="row" href="{{ url_for('item_page', item_id=i.item_id) }}">
+  <span>{{ i.item_id }} · {{ i.name }} <small>({{ i.type }})</small></span>
+  <span class="badge">{{ i.status }}</span>
+</a>
+{% endfor %}
+
+{% endblock %}

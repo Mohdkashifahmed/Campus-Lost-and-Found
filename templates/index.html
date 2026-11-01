@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Live Dashboard</h1>
+<div class="stats">
+  <div class="card"><b>{{ stats.found }}</b><span>Found items</span></div>
+  <div class="card"><b>{{ stats.lost }}</b><span>Lost reports</span></div>
+  <div class="card"><b>{{ stats.in_box }}</b><span>In box</span></div>
+  <div class="card"><b>{{ stats.returned }}</b><span>Returned</span></div>
+</div>
+
+<div class="two-col">
+  <section>
+    <h2>Recent items</h2>
+    {% for i in recent %}
+      <a class="row" href="{{ url_for('item_page', item_id=i.item_id) }}">
+        <span>{{ i.name }} <small>({{ i.type }})</small></span>
+        <span class="badge">{{ i.status }}</span>
+      </a>
+    {% else %}<p>No items yet.</p>{% endfor %}
+  </section>
+  <section>
+    <h2>Activity log</h2>
+    {% for a in activity %}
+      <div class="row"><span>{{ a.event }} <small>{{ a.item_id }}</small></span>
+      <small>{{ a.time }}</small></div>
+    {% else %}<p>No activity yet.</p>{% endfor %}
+  </section>
+</div>
+<script>setTimeout(() => location.reload(), 20000);</script>
+{% endblock %}

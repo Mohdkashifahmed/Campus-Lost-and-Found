@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ item.name }} <span class="badge">{{ item.status }}</span></h1>
+<div class="detail">
+  {% if item.image %}<img src="{{ url_for('static', filename='uploads/' + item.image) }}" alt="">{% endif %}
+  <p><b>Item ID:</b> {{ item.item_id }}</p>
+  <p><b>Type:</b> {{ item.type|capitalize }} · <b>Category:</b> {{ item.category }}</p>
+  <p><b>Location:</b> {{ item.location }} · <b>Date:</b> {{ item.date }}</p>
+  <p>{{ item.description }}</p>
+</div>
+
+{% if item.type == "found" and item.status == "Checked In" %}
+<h2>Is this yours? Submit a claim</h2>
+<form method="post" action="{{ url_for('claim', item_id=item.item_id) }}" class="form">
+  <label>Your name <input name="name" required></label>
+  <label>Roll number <input name="roll_no" required></label>
+  <label>Email <input type="email" name="email" required></label>
+  <label>Proof of ownership (unique marks, contents, purchase details)
+    <textarea name="proof" rows="3" required></textarea></label>
+  <button>Submit Claim</button>
+</form>
+{% elif item.status == "Claim Pending" %}
+<p>A claim is pending admin verification.</p>
+{% elif item.status == "Returned" %}
+<p>This item has been returned to its owner.</p>
+{% endif %}
+{% endblock %}
